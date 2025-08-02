@@ -3,33 +3,33 @@
 #include <queue>
 #include <windows.h>
 #include <algorithm>
-//����������
-#define PLAY_MODE			1					//����ģʽ(0:�ֶ�����,1:�Զ�Ѱ·,2:�ֶ�Ѱ·(��Ҫ���س�))
-#define FIND_WAY_ALGORITHM	1					//Ѱ·�㷨(0:BFS,1:A*)
-//DEBUG����
-//#define SHOW_CONSOLE							//�Ƿ���ʾ����̨
-//#define SHOW_STEPNUM							//�Ƿ���ʾ��ǰ����(�����ڱ�����ʾ,������ᵼ���ߵ��ƶ��ٶȱ���)
-//��������
-#define WINDOW_WIDTH		640                 //���ڿ���
-#define WINDOW_HEIGHT		640                 //���ڸ߶�
-#define POINT_WIDTH			40					//һ����Ŀ���(����)
-//��Ϸ����
-#define SCORE_INCREASE		10                  //�����Ƿ�
-#define DELAY				200					//�ֶ��������ʱ
-#define AUTO_DELAY			0					//�Զ�Ѱ·����ʱ
-#define HAND_DELAY			10					//�ֶ�Ѱ·����ʱ(����ֶ���̰���߾޿죬�����һ���������)
+//基础配置项
+#define PLAY_MODE			1					//游玩模式(0:手动游玩,1:自动寻路,2:手动寻路(需要按回车))
+#define FIND_WAY_ALGORITHM	1					//寻路算法(0:BFS,1:A*)
+//DEBUG配置
+//#define SHOW_CONSOLE							//是否显示控制台
+//#define SHOW_STEPNUM							//是否显示当前步数(步数在标题显示,开启后会导致蛇的移动速度变慢)
+//窗口配置
+#define WINDOW_WIDTH		400                 //窗口宽度
+#define WINDOW_HEIGHT		400                 //窗口高度
+#define POINT_WIDTH			40					//一个点的宽度(像素)
+//游戏配置
+#define SCORE_INCREASE		10                  //分数涨幅
+#define DELAY				200					//手动游玩的延时
+#define AUTO_DELAY			0					//自动寻路的延时
+#define HAND_DELAY			10					//手动寻路的延时(如果手动的贪吃蛇巨快，建议调一下这个设置)
 
-#define SNAKE_INIT_SIZE		4                   //������ʼ������
-#define SNAKE_COLOR_HEAD	RGB(255,0,0)		//��ͷ��ɫ
-#define SNAKE_COLOR_BODY	RGB(0,0,255)		//������ɫ
-#define SNAKE_COLOR_TAIL	RGB(255,0,255)      //����β��ɫ
-#define FOOD_COLOR			RGB(255,255,0)      //ʳ����ɫ
-#define BACKGROUND_COLOR	RGB(255,255,255)	//������ɫ
-//�㷨�õ�
-#define MAP_WIDTH			WINDOW_WIDTH / POINT_WIDTH + 10		//�����ͼ���ȴ�С
-#define MAP_HEIGHT			WINDOW_HEIGHT / POINT_WIDTH + 10	//�����ͼ�߶ȴ�С
+#define SNAKE_INIT_SIZE		4                   //蛇身初始化长度
+#define SNAKE_COLOR_HEAD	RGB(255,0,0)		//蛇头颜色
+#define SNAKE_COLOR_BODY	RGB(0,0,255)		//蛇身颜色
+#define SNAKE_COLOR_TAIL	RGB(255,0,255)      //蛇身尾颜色
+#define FOOD_COLOR			RGB(255,255,0)      //食物颜色
+#define BACKGROUND_COLOR	RGB(255,255,255)	//背景颜色
+//算法用的
+#define MAP_WIDTH			WINDOW_WIDTH / POINT_WIDTH + 10		//虚拟地图宽度大小
+#define MAP_HEIGHT			WINDOW_HEIGHT / POINT_WIDTH + 10	//虚拟地图高度大小
 
-//ͨ�õĵ���:���ڹ�����̫С�ˣ����ԾͰ��߼�д������
+//通用的点类:由于工程量太小了，所以就把逻辑写这里了
 struct Point {
 	int x = 0, y = 0, dist = 0;
 	bool operator==(Point p) {
@@ -75,7 +75,7 @@ struct Point {
 };
 struct PointDistCmp {
 	bool operator()(Point a, Point b) const {
-		return a.dist < b.dist;
+		return a.dist > b.dist;
 	}
 };
 
