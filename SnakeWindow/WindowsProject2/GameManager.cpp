@@ -10,28 +10,28 @@ GameManager::~GameManager() {
 }
 
 void GameManager::Start() {
-	MessageBox(hWnd, L"ÓÎÏ·¼´½«¿ªÊ¼,Çë×öºÃ×¼±¸", L"ÌáÊ¾", MB_ICONINFORMATION);
+	MessageBox(hWnd, L"æ¸¸æˆå³å°†å¼€å§‹,è¯·åšå¥½å‡†å¤‡", L"æç¤º", MB_ICONINFORMATION);
 }
 size_t nb = 0;
 wchar_t str[20];
 bool GameManager::Update() {
 	if (snake.hitWall()) {
-		wsprintf(str, L"×îÖÕ²½ÊıÎª:%lu", nb);
+		wsprintf(str, L"æœ€ç»ˆæ­¥æ•°ä¸º:%lu", nb);
 		SetWindowText(hWnd, str);
 		return false;
 	}
 	nb++;
 #ifdef SHOW_STEPNUM
-	wsprintf(str, L"µ±Ç°²½ÊıÎª:%lu", nb);
+	wsprintf(str, L"å½“å‰æ­¥æ•°ä¸º:%lu", nb);
 	SetWindowText(hWnd, str);
 #endif
-	//³õÊ¼»¯²¢»æÖÆ»ù±¾µÄ¶«Î÷
+	//åˆå§‹åŒ–å¹¶ç»˜åˆ¶åŸºæœ¬çš„ä¸œè¥¿
 	snake.moveSnake();
 	if (!food.isExist())
 		initFood();
 	//updateMap(snake);
 	//printMap();
-	//Éß³Ôµ½ÁËÊ³Îï
+	//è›‡åƒåˆ°äº†é£Ÿç‰©
 	if (snake.headHit(food.point)) {
 		snake.pushSnake();
 		food.hide();
@@ -41,9 +41,9 @@ bool GameManager::Update() {
 	}
 	
 	showScore();
-	//ÕâÀïÅĞ¶ÏÊÇÍæ¼ÒÓÎÍæ»¹ÊÇ×Ô¶¯Ñ°Â·
+	//è¿™é‡Œåˆ¤æ–­æ˜¯ç©å®¶æ¸¸ç©è¿˜æ˜¯è‡ªåŠ¨å¯»è·¯
 	if (PLAY_MODE != 0)
-		autoPlay();				//×Ô¶¯Ñ°Â·ÓÎÍæÂß¼­
+		autoPlay();				//è‡ªåŠ¨å¯»è·¯æ¸¸ç©é€»è¾‘
 
 	return true;
 }
@@ -61,7 +61,7 @@ void GameManager::showScore() {
 	//wchar_t text[20] = L"";
 	//wsprintf(text, L"score: %d", score);
 	//settextcolor(LIGHTGREEN);
-	//settextstyle(20, 0, L"¿¬Ìå");
+	//settextstyle(20, 0, L"æ¥·ä½“");
 	//outtextxy((WINDOW_WIDTH - 100) / 2, 10, text);
 }
 void GameManager::initFood() {
@@ -97,28 +97,28 @@ void GameManager::updateMap(Snake& snake) {
 	mapSnakePoint.resize(len);
 	for (int i = 0; i < len; i++)
 		mapSnakePoint[i] = snake.point[i] / POINT_WIDTH;
-	//Éú³ÉÊ³Îï
+	//ç”Ÿæˆé£Ÿç‰©
 	map[mapFood.x][mapFood.y] = 2;
-	//Éú³ÉÉßµÄÉíÌå
+	//ç”Ÿæˆè›‡çš„èº«ä½“
 	for (int i = 1; i < len; i++)
 		map[mapSnakePoint[i].x][mapSnakePoint[i].y] = 1;
-	//ÉßºóÃæµÄĞéÄâÎ²°Í
+	//è›‡åé¢çš„è™šæ‹Ÿå°¾å·´
 	map[mapSnakePoint[len - 1].x][mapSnakePoint[len - 1].y] = 3;
-	//ÉßµÄÕæÊµÎ²°Í
+	//è›‡çš„çœŸå®å°¾å·´
 	map[mapSnakePoint[len - 2].x][mapSnakePoint[len - 2].y] = 3;
-	//ÉßÍ·
+	//è›‡å¤´
 	map[mapSnakePoint[0].x][mapSnakePoint[0].y] = 4;
 }
 
 void GameManager::autoPlay() {
-	//ÎªÁË·½±ãĞ´Ëã·¨£¬Ã¿Ò»´ÎÑ­»·ÕâÀï¶¼ÖØĞÂÉú³ÉÒ»´ÎµØÍ¼µÄĞÅÏ¢(0:¿ÕµØ,1:Ç½,2:Ê³Îï,3ÉßÎ²,4:ÉßÍ·)
+	//ä¸ºäº†æ–¹ä¾¿å†™ç®—æ³•ï¼Œæ¯ä¸€æ¬¡å¾ªç¯è¿™é‡Œéƒ½é‡æ–°ç”Ÿæˆä¸€æ¬¡åœ°å›¾çš„ä¿¡æ¯(0:ç©ºåœ°,1:å¢™,2:é£Ÿç‰©,3è›‡å°¾,4:è›‡å¤´)
 	updateMap(snake);
 	Position position = snake.position;
 	size_t tail = snake.point.size() - 1;
 	PointList path;
 	PointList newPath;
 	if (isSaveFlag && !ans.empty()) {
-		//Èç¹ûĞéÄâÉß³ÔÍêÊ³ÎïÖ®ºóÊÇ°²È«µÄ,ÕâÀïÖ±½Ó°´ÕÕ¾ø¶Ô°²È«µÄ·½Ê½×ß¾Í¿ÉÒÔÁË
+		//å¦‚æœè™šæ‹Ÿè›‡åƒå®Œé£Ÿç‰©ä¹‹åæ˜¯å®‰å…¨çš„,è¿™é‡Œç›´æ¥æŒ‰ç…§ç»å¯¹å®‰å…¨çš„æ–¹å¼èµ°å°±å¯ä»¥äº†
 		size_t len = ans.size();
 		snake.nextPosition(findPosition(ans[len - 1] - mapSnakePoint[0]));
 		ans.pop_back();
@@ -126,9 +126,9 @@ void GameManager::autoPlay() {
 			isSaveFlag = false;
 		return;
 	}
-	//ÅĞ¶ÏÊÇ·ñÄÜÍ¨ÍùÊ³Îï
+	//åˆ¤æ–­æ˜¯å¦èƒ½é€šå¾€é£Ÿç‰©
 	if (findWay(snake.point[0], food.point, position, path)) {
-		//Èç¹ûÕÒµ½ÁËÍ¨ÍùÊ³ÎïµÄÂ·»¹ÒªÅĞ¶Ï³ÔÍêÊ³ÎïºóÊÇ·ñÄÜÕÒµ½×Ô¼ºµÄÎ²°Í
+		//å¦‚æœæ‰¾åˆ°äº†é€šå¾€é£Ÿç‰©çš„è·¯è¿˜è¦åˆ¤æ–­åƒå®Œé£Ÿç‰©åæ˜¯å¦èƒ½æ‰¾åˆ°è‡ªå·±çš„å°¾å·´
 		if (snakeSafe(path)) {
 			updateMap(snake);
 			ans = path;
@@ -141,20 +141,20 @@ void GameManager::autoPlay() {
 		else {
 			Position newPos;
 			PointList newPath;
-			std::cout << "³ÔÁËÊ³ÎïÖ®ºó²»°²È«" << std::endl;
+			std::cout << "åƒäº†é£Ÿç‰©ä¹‹åä¸å®‰å…¨" << std::endl;
 			updateMap(snake);
 
 			if (findWay(snake.point[0], snake.point[tail], newPos, newPath)) {
 				fuckRule();
 			}
 			else {
-				//std::cout << "³ÔÁËÊ³ÎïÖ®ºó²»°²È«?????????????" << std::endl;
+				//std::cout << "åƒäº†é£Ÿç‰©ä¹‹åä¸å®‰å…¨?????????????" << std::endl;
 				fuckRule();
 			}
 		}
 	}
 	else if (findWay(snake.point[0], snake.point[tail], position, newPath)) {
-		//std::cout << "³Ô²»µ½Ê³ÎïËùÒÔÖ»ÄÜ×·Î²°Í" << std::endl;
+		//std::cout << "åƒä¸åˆ°é£Ÿç‰©æ‰€ä»¥åªèƒ½è¿½å°¾å·´" << std::endl;
 		fuckRule();
 	}
 	else {
@@ -163,7 +163,7 @@ void GameManager::autoPlay() {
 	}
 
 }
-//Çó´Óstartµ½aimµÄ×î¶ÌÂ·,position±íÊ¾´Óstartµ½aim×î¶ÌÂ·µÄÏÂÒ»²½µÄ·½Ïò,ans±íÊ¾×î¶ÌÂ·¾¶
+//æ±‚ä»startåˆ°aimçš„æœ€çŸ­è·¯,positionè¡¨ç¤ºä»startåˆ°aimæœ€çŸ­è·¯çš„ä¸‹ä¸€æ­¥çš„æ–¹å‘,ansè¡¨ç¤ºæœ€çŸ­è·¯å¾„
 bool GameManager::findWay(Point start, Point aim, Position& position, PointList& ans) {
 	if (start == aim)
 		return true;
@@ -195,7 +195,7 @@ Position GameManager::findPosition(Point p) {
 	else if (index == 3)
 		return left;
 }
-//¼ÙÉèÒ»¸öĞéÄâÉßÈ¥³Ô,ÅĞ¶ÏÉß³ÔÍêÊ³ÎïºóÊÇ·ñ°²È«
+//å‡è®¾ä¸€ä¸ªè™šæ‹Ÿè›‡å»åƒ,åˆ¤æ–­è›‡åƒå®Œé£Ÿç‰©åæ˜¯å¦å®‰å…¨
 bool GameManager::snakeSafe(PointList& res) {
 	Position p;
 	PointList t;
@@ -226,13 +226,17 @@ void GameManager::printMap() {
 int findManhattanDist(Point& a, Point& b) {
 	return abs(a.x - b.x) + abs(a.y - b.y);
 }
+int findDiagonalDistance(Point& a, Point& b) {
+	return max(abs(a.x - b.x), abs(a.y - b.y));
+}
+
 
 void GameManager::fuckRule() {
 	updateMap(snake);
 	//printMap();
-	//ÈÃÉßÔÚËÄÖÜÑ¡ÔñÒ»¸ö°²È«µÄÎ»ÖÃ£¬ÒÆ¶¯Ò»²½
-	//ÒªÇó: 1.ÒÆ¶¯Ö®ºó±ØĞë¿´¼ûÉßÎ²,Ê¹×Ô¼º±£³ÖÔÚ°²È«×´Ì¬
-	//      2.Èç¹ûÖÜ±ßÓĞ¶à¸öÕâÑùµÄÎ»ÖÃ,ÕÒÀëÉßÎ²µÄÂü¹ş¶Ù¾àÀë×îÔ¶µÄÎ»ÖÃ
+	//è®©è›‡åœ¨å››å‘¨é€‰æ‹©ä¸€ä¸ªå®‰å…¨çš„ä½ç½®ï¼Œç§»åŠ¨ä¸€æ­¥
+	//è¦æ±‚: 1.ç§»åŠ¨ä¹‹åå¿…é¡»çœ‹è§è›‡å°¾,ä½¿è‡ªå·±ä¿æŒåœ¨å®‰å…¨çŠ¶æ€
+	//      2.å¦‚æœå‘¨è¾¹æœ‰å¤šä¸ªè¿™æ ·çš„ä½ç½®,æ‰¾ç¦»è›‡å°¾çš„æ›¼å“ˆé¡¿è·ç¦»æœ€è¿œçš„ä½ç½®
 	PointList nb = { };
 	Point Max;
 	for (int i = 0; i < 4; i++) {
@@ -316,7 +320,7 @@ bool GameManager::findWayBfs(Point start, Point aim, PointList& ans) {
 	return true;
 }
 int distance[MAP_WIDTH][MAP_HEIGHT] = { 0 };
-//Çó´Óstartµ½aimµÄ×î¶ÌÂ·,ans±íÊ¾×î¶ÌÂ·¾¶
+//æ±‚ä»startåˆ°aimçš„æœ€çŸ­è·¯,ansè¡¨ç¤ºæœ€çŸ­è·¯å¾„
 bool GameManager::findWayAStar(Point start, Point aim, PointList& ans) {
 	memset(distance, 0x3f, sizeof(distance));
 	memset(isWalked, 0, sizeof(isWalked));
@@ -324,7 +328,7 @@ bool GameManager::findWayAStar(Point start, Point aim, PointList& ans) {
 	PointProiriyQueue heap;
 	Point path[MAP_WIDTH][MAP_HEIGHT];
 	bool flag = false;
-	heap.push({ start.x,start.y,1 + findManhattanDist(start, aim) });
+	heap.push({ start.x,start.y,1 + findDiagonalDistance(start, aim) });
 	while (!heap.empty()) {
 		auto t = heap.top();
 		heap.pop();
@@ -346,7 +350,7 @@ bool GameManager::findWayAStar(Point start, Point aim, PointList& ans) {
 			if (distance[next.x][next.y] > distance[t.x][t.y] + 1) {
 				distance[next.x][next.y] = distance[t.x][t.y] + 1;
 				path[next.x][next.y] = t;
-				heap.push({ next.x,next.y,distance[t.x][t.y] + 1 + findManhattanDist(next,aim) });
+				heap.push({ next.x,next.y,distance[t.x][t.y] + 1 + findDiagonalDistance(next,aim) });
 			}
 		}
 	}
@@ -364,7 +368,7 @@ bool GameManager::findWayAStar(Point start, Point aim, PointList& ans) {
 	}
 	return true;
 }
-//ÏŞÖÆÑ°Â·Â·¾¶
+//é™åˆ¶å¯»è·¯è·¯å¾„
 bool GameManager::isTrue(int index,Point t){
 	int row = t.y;
 	int col = t.x;
