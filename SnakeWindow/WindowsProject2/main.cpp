@@ -22,11 +22,11 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreInstance, LPSTR lpCmdLine,
 	wndclass.hInstance = hInstance;
 	wndclass.lpszMenuName = NULL;
 	wndclass.style = CS_VREDRAW | CS_HREDRAW;
-
 	if (!RegisterClass(&wndclass)) {
 		MessageBox(NULL, L"窗口注册失败", L"WARNING", MB_ICONERROR);
 		exit(0);
 	}
+	//通过设定的视口大小，获取实际窗口的大小
 	int realWidth = WINDOW_WIDTH;
 	int realHeight = WINDOW_HEIGHT;
 	RECT rect;
@@ -35,12 +35,16 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreInstance, LPSTR lpCmdLine,
 	rect.top = 0;
 	rect.bottom = realHeight;
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, NULL);
+	//实际窗口的大小
 	int windowWidth = rect.right - rect.left;
 	int windowHeight = rect.bottom - rect.top;
+	//创建一个窗口并获取窗口句柄
 	hWnd = CreateWindow(szAppName, szAppName, WS_OVERLAPPEDWINDOW,
-		600, 200, windowWidth, windowHeight, NULL, NULL, hInstance, NULL);
+		WINDOW_X, WINDOW_Y, windowWidth, windowHeight, NULL, NULL, hInstance, NULL);
+	//显示并更新窗口
 	ShowWindow(hWnd, SW_SHOW);
 	UpdateWindow(hWnd);
+	//消息机制
 	MSG msg;
 	while (GetMessage(&msg, 0, NULL, NULL)) {
 		DispatchMessage(&msg);
@@ -48,6 +52,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPreInstance, LPSTR lpCmdLine,
 	}
 	return 0;
 }
+//此线程是游戏逻辑的主线程
 DWORD WINAPI myThread(LPVOID lpParameter) {
 	unsigned fuck = (unsigned)time(NULL);
 	std::cout << fuck << std::endl;
@@ -60,10 +65,10 @@ DWORD WINAPI myThread(LPVOID lpParameter) {
 	while (1) {
 		if (flag) {
 			if (!Update() && gameOverFlag) {
+				//此时游戏结束,将游戏结束的消息发给WM_GAMEOVER,此消息是自定义消息
 				SendMessage(hWnd, WM_GAMEOVER, NULL, NULL);
 				gameOverFlag = false;
 			}
-			
 			InvalidateRect(hWnd, NULL, TRUE);
 			if (PLAY_MODE == 2)
 				flag = false;
@@ -78,30 +83,27 @@ DWORD WINAPI myThread(LPVOID lpParameter) {
 			Sleep(HAND_DELAY);
 			if (GetAsyncKeyState(VK_RETURN))
 				flag = true;
-			
 		}
 	}
 	return 0;
 }
+//此线程是游戏结束逻辑的线程
 DWORD WINAPI gameOverThread(LPVOID lpParameter) {
 	MessageBox(hWnd,L"撞墙了,游戏结束",L"提示",MB_ICONERROR);
 	exit(0);
 	return 0;
 }
-HANDLE handle;
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	
 	switch (uMsg)
 	{
 	case WM_GAMEOVER:
 		CreateThread(0, 0, gameOverThread, 0, 0, 0);
 		break;
-	case WM_ERASEBKGND:
+	case WM_ERASEBKGND:	//自动清屏的消息,这里不处理此消息是因为有双缓冲机制
 		return 1;
 	case WM_CREATE: {
 		Start(hWnd);
-		handle = CreateThread(0, 0, myThread, 0, 0, 0);
+		HANDLE handle = CreateThread(0, 0, myThread, 0, 0, 0);
 		break;
 	}
 	case WM_PAINT: {
