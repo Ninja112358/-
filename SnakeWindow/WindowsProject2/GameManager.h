@@ -24,12 +24,12 @@ public:
 	GameManager();
 	~GameManager();
 
-	void Start();					//ÓÎÏ·³õÊ¼»¯
-	bool Update();					//¸üĞÂÓÎÏ·,Ã¿Ö¡µ÷ÓÃÒ»´Î
-	void Draw(HDC hdc);					//»æ»­
-	void setHWND(HWND hWnd);		//ÉèÖÃ´°¿Ú¾ä±ú
-	void showScore();				//ÏÔÊ¾·ÖÊı
-	void initFood();				//³õÊ¼»¯Ê³Îï(¸ù¾İmap)
+	void Start();					//æ¸¸æˆåˆå§‹åŒ–
+	bool Update();					//æ›´æ–°æ¸¸æˆ,æ¯å¸§è°ƒç”¨ä¸€æ¬¡
+	void Draw(HDC hdc);					//ç»˜ç”»
+	void setHWND(HWND hWnd);		//è®¾ç½®çª—å£å¥æŸ„
+	void showScore();				//æ˜¾ç¤ºåˆ†æ•°
+	void initFood();				//åˆå§‹åŒ–é£Ÿç‰©(æ ¹æ®map)
 private:
 	void updateMap(Snake& snake);
 	void autoPlay();
@@ -38,16 +38,17 @@ private:
 
 	bool findWay(Point start, Point aim, Position& position, PointList& path);
 
-	Position findPosition(Point p);		//ÕÒ
+	Position findPosition(Point p);		//æ‰¾
 	bool snakeSafe(PointList& path);
 	void printMap();
 	void fuckRule();
 	Point findHead();
 
 
-	bool findWayBfs(Point start, Point aim, PointList& path);	//bfsÊµÏÖÑ°Â·Ëã·¨
-	bool findWayAStar(Point start, Point aim, PointList& path);	//A*ÊµÏÖÑ°Â·Ëã·¨
-	bool isTrue(int index,Point t);										//ÅĞ¶ÏÄÜ²»ÄÜ×ß
+	bool findWayBfs(Point start, Point aim, PointList& path);	//bfså®ç°å¯»è·¯ç®—æ³•
+	bool findWayAStar(Point start, Point aim, PointList& path);	//A*å®ç°å¯»è·¯ç®—æ³•
+	bool isTrue(int index,Point t);										//åˆ¤æ–­èƒ½ä¸èƒ½èµ°
 };
 
 int findManhattanDist(Point& a, Point& b);
+int findDiagonalDistance(Point& a, Point& b);
